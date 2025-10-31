@@ -44,7 +44,7 @@ def obtener_datos_usuario(username, password):
             # (esto es temporal; se recomienda migrar todos los registros a hash).
             cursor.execute("""
                 SELECT u.id_usuario, u.nombre, u.correo, u.telefono, u.fecha_nacimiento
-                FROM credenciales c
+                FROM tabla_credenciales c
                 JOIN usuarios u ON c.id_usuario = u.id_usuario
                 WHERE c.username = %s
                   AND (
@@ -95,9 +95,9 @@ def registrar_usuario():
             """, (nombre, correo, telefono, fecha_nacimiento))
             id_usuario = cursor.fetchone()[0]
 
-            # Insertar en credenciales con hash de contraseña (bcrypt via pgcrypto)
+            # Insertar en tabla_credenciales con hash de contraseña (bcrypt via pgcrypto)
             cursor.execute("""
-                INSERT INTO credenciales (id_usuario, username, password_hash)
+                INSERT INTO tabla_credenciales (id_usuario, username, password_hash)
                 VALUES (%s, %s, crypt(%s, gen_salt('bf')));
             """, (id_usuario, username, password))
 
